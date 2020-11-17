@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View, FlatList } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import ItemEvento from '../../components/itemEvento/index';
 
 const Eventos = () => {
 
     // let url = 'http://localhost:62602/api/Eventos';
     let url = 'https://5f7f873fd6aabe00166f06be.mockapi.io/nyous/eventos';
 
-    const [token, setToken] = useState('');
     const [eventos, setEventos] = useState([]);
-
-    const getToken = async () => {
-        setToken(await AsyncStorage.getItem('@jwt'));
-    }
 
     useEffect(() => {
         listarEventos();
@@ -30,14 +25,22 @@ const Eventos = () => {
     }
 
     useEffect(()=>{
-        getToken();
         listarEventos();
     }, [])
+
+    const renderItem = ({ item }) => (
+        <ItemEvento nome={item.nome} imagem={item.urlImagem} link={item.link} />
+      );
 
     return(
         <View>
             <Text>Eventos</Text>
-            <Text>{token}</Text>
+            
+            <FlatList
+                data={eventos}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+            />
         </View>
     )
 }
